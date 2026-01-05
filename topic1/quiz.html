@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Topic 1 Quiz – Cell Biology</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+<a class="btn" href="index.html">← Back to Topic 1</a>
+
+<h1>Topic 1 Quiz</h1>
+<p class="muted">
+Choose a subtopic, then start. Questions randomise each time. Best score saves automatically.
+</p>
+
+<div class="card">
+  <h2>Setup</h2>
+
+  <label for="topicSelect"><strong>Subtopic:</strong></label>
+  <select id="topicSelect" class="btn" style="margin: 8px 0; display:block;">
+    <option value="all">All (mixed)</option>
+    <option value="cell-structure">Cell Structure</option>
+    <option value="microscopy">Microscopy</option>
+    <option value="cell-transport">Cell Transport</option>
+    <option value="mitosis">Mitosis</option>
+    <option value="stem-cells">Stem Cells</option>
+  </select>
+
+  <label for="countSelect"><strong>Number of questions:</strong></label>
+  <select id="countSelect" class="btn" style="margin: 8px 0; display:block;">
+    <option value="5">5</option>
+    <option value="10" selected>10</option>
+    <option value="15">15</option>
+    <option value="20">20</option>
+  </select>
+
+  <button id="startBtn" class="btn">Start Quiz</button>
+
+  <p class="muted" style="margin-top:12px;">
+    <strong>Best score:</strong> <span id="bestScore">—</span>
+  </p>
+</div>
+
+<div id="quizArea" class="card" style="display:none;">
+  <p><strong id="progress">Question 1 of 1</strong></p>
+  <h2 id="question">Loading…</h2>
+  <div id="choices"></div>
+  <p id="feedback" class="muted"></p>
+  <button id="nextBtn" class="btn" style="display:none;">Next</button>
+</div>
+
+<div id="scoreArea" class="card" style="display:none;">
+  <p><strong>Score:</strong> <span id="score">0</span> / <span id="total">0</span></p>
+  <p class="muted"><strong>Best score (this subtopic):</strong> <span id="bestScoreLive">—</span></p>
+  <button id="restartBtn" class="btn">Restart</button>
+</div>
+
+<script>
+  // -----------------------------
+  // Question bank (edit/add here)
+  // Each question has a topic tag
+  // -----------------------------
+  const QUESTION_BANK = [
+    // Cell Structure
+    {
+      topic: "cell-structure",
+      q: "Which structure is the site of protein synthesis?",
+      choices: ["Nucleus", "Ribosomes", "Mitochondria", "Cell membrane"],
+      answerIndex: 1,
+      explain: "Ribosomes are the site of protein synthesis."
+    },
+    {
+      topic: "cell-structure",
+      q: "Which structure contains DNA and controls cell activities?",
+      choices: ["Cytoplasm", "Nucleus", "Cell wall", "Ribosomes"],
+      answerIndex: 1,
+      explain: "The nucleus contains genetic material (DNA) and controls cell activities."
+    },
+    {
+      topic: "cell-structure",
+      q: "Which structure is unique to plant cells (not found in animal cells)?",
+      choices: ["Cell membrane", "Mitochondria", "Chloroplasts", "Ribosomes"],
+      answerIndex: 2,
+      explain: "Chloroplasts are found in plant cells (not animal cells)."
+    },
+    {
+      topic: "cell-structure",
+      q: "What is the function of mitochondria?",
+      choices: [
+        "Site of aerobic respiration (energy release)",
+        "Protein synthesis",
+        "Controls what enters/leaves",
+        "Contains chlorophyll"
+      ],
+      answerIndex: 0,
+      explain: "Mitochondria are the site of aerobic respiration where energy is released."
+    },
+    {
+      topic: "cell-structure",
+      q: "Why are bacterial cells called prokaryotic?",
+      choices: [
+        "They contain mitochondria",
+        "They have a nucleus",
+        "They lack a nucleus and membrane-bound organelles",
+        "They have chloroplasts"
+      ],
+      answerIndex: 2,
+      explain: "Prokaryotes do not have a nucleus or membrane-bound organelles."
+    },
+
+    // Microscopy
+    {
+      topic: "microscopy",
+      q: "Define resolution.",
+      choices: [
+        "How many times bigger an image is",
+        "The ability to distinguish two close points as separate",
+        "The thickness of a slide",
+        "How much stain is used"
+      ],
+      answerIndex: 1,
+      explain: "Resolution is the ability to distinguish two close points as separate."
+    },
+    {
+      topic: "microscopy",
+      q: "Why do electron microscopes have higher resolution than light microscopes?",
+      choices: [
+        "They use thicker lenses",
+        "Electrons have a shorter wavelength than light",
+        "They use more stain",
+        "They are easier to focus"
+      ],
+      answerIndex: 1,
+      explain: "Shorter wavelength (electrons) allows finer detail to be resolved."
+    },
+    {
+      topic: "microscopy",
+      q: "Magnification = ?",
+      choices: [
+        "real size ÷ image size",
+        "image size ÷ real size",
+        "image size + real size",
+        "real size ÷ resolution"
+      ],
+      answerIndex: 1,
+      explain: "Magnification = image size ÷ real size (use same units)."
+    },
+    {
+      topic: "microscopy",
+      q: "Convert 0.12 mm into µm.",
+      choices: ["12 µm", "120 µm", "1200 µm", "0.0012 µm"],
+      answerIndex: 1,
+      explain: "1 mm = 1000 µm, so 0.12 mm = 120 µm."
+    },
+    {
+      topic: "microscopy",
+      q: "Why start on the lowest magnification when using a light microscope?",
+      choices: [
+        "To avoid air bubbles",
+        "To find the specimen more easily",
+        "To increase resolution",
+        "Because stains only work at low magnification"
+      ],
+      answerIndex: 1,
+      explain: "Low magnification gives a larger field of view to locate the specimen."
+    },
+
+    // Cell Transport
+    {
+      topic: "cell-transport",
+      q: "Define diffusion.",
+      choices: [
+        "Movement of water across a membrane",
+        "Net movement of particles from high to low concentration",
+        "Movement from low to high concentration using energy",
+        "Movement of blood around the body"
+      ],
+      answerIndex: 1,
+      explain: "Diffusion is the net movement of particles from high to low concentration."
+    },
+    {
+      topic: "cell-transport",
+      q: "Osmosis is best described as…",
+      choices: [
+        "Diffusion of water through a partially permeable membrane",
+        "Diffusion of any particles through a membrane",
+        "Movement of ions using energy",
+        "Movement of glucose down a gradient"
+      ],
+      answerIndex: 0,
+      explain: "Osmosis is the diffusion of water across a partially permeable membrane."
+    },
+    {
+      topic: "cell-transport",
+      q: "Which process requires energy from respiration?",
+      choices: ["Diffusion", "Osmosis", "Active transport", "Evaporation"],
+      answerIndex: 2,
+      explain: "Active transport moves substances against the concentration gradient, requiring energy."
+    },
+    {
+      topic: "cell-transport",
+      q: "What happens to a plant cell in a dilute solution?",
+      choices: ["Becomes turgid", "Becomes flaccid", "Bursts", "No change ever"],
+      answerIndex: 0,
+      explain: "Water enters by osmosis; vacuole swells; turgor pressure increases; cell becomes turgid."
+    },
+    {
+      topic: "cell-transport",
+      q: "Which factor increases diffusion rate?",
+      choices: ["Lower temperature", "Smaller concentration difference", "Steeper concentration gradient", "Thicker membrane"],
+      answerIndex: 2,
+      explain: "A steeper concentration gradient increases the rate of diffusion."
+    },
+
+    // Mitosis
+    {
+      topic: "mitosis",
+      q: "What happens in interphase?",
+      choices: [
+        "Nucleus divides",
+        "Cell grows and DNA is copied",
+        "Cytoplasm divides",
+        "Chromosomes line up at the equator"
+      ],
+      answerIndex: 1,
+      explain: "In interphase, the cell grows and copies its DNA."
+    },
+    {
+      topic: "mitosis",
+      q: "Which stage is: chromosomes line up at the centre of the cell?",
+      choices: ["Prophase", "Metaphase", "Anaphase", "Telophase"],
+      answerIndex: 1,
+      explain: "In metaphase, chromosomes line up at the equator."
+    },
+    {
+      topic: "mitosis",
+      q: "Mitosis produces…",
+      choices: ["Two different cells", "Two genetically identical cells", "Four genetically different cells", "One larger cell"],
+      answerIndex: 1,
+      explain: "Mitosis produces two genetically identical daughter cells."
+    },
+    {
+      topic: "mitosis",
+      q: "Uncontrolled cell division can lead to…",
+      choices: ["Photosynthesis", "Tumours", "Diffusion", "Osmosis"],
+      answerIndex: 1,
+      explain: "Uncontrolled cell division can form tumours (malignant tumours are cancer)."
+    },
+
+    // Stem Cells
+    {
+      topic: "stem-cells",
+      q: "Stem cells are best described as…",
+      choices: [
+        "Specialised cells that cannot change",
+        "Undifferentiated cells that can differentiate",
+        "Cells with no DNA",
+        "Cells that only do respiration"
+      ],
+      answerIndex: 1,
+      explain: "Stem cells are undifferentiated and can differentiate into specialised cells."
+    },
+    {
+      topic: "stem-cells",
+      q: "Where are plant stem cells found?",
+      choices: ["Mitochondria", "Meristems (root/shoot tips)", "Nucleus", "Ribosomes"],
+      answerIndex: 1,
+      explain: "Plant stem cells are found in meristems such as root and shoot tips."
+    },
+    {
+      topic: "stem-cells",
+      q: "Why are embryonic stem cells ethically controversial?",
+      choices: [
+        "They do not divide",
+        "They require destroying embryos",
+        "They only exist in plants",
+        "They cause photosynthesis"
+      ],
+      answerIndex: 1,
+      explain: "Embryonic stem cells involve destroying embryos, which raises ethical concerns."
+    }
+  ];
+
+  // -----------------------------
+  // Helpers
+  // -----------------------------
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let j = a.length - 1; j > 0; j--) {
+      const k = Math.floor(Math.random() * (j + 1));
+      [a[j], a[k]] = [a[k], a[j]];
+    }
+    return a;
+  }
+
+  function bestKey(topic) {
+    return `bestScore_topic1_${topic}`;
+  }
+
+  function loadBest(topic) {
+    const raw = localStorage.getItem(bestKey(topic));
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch { return null; }
+  }
+
+  function saveBest(topic, score, total) {
+    const current = loadBest(topic);
+    const pct = Math.round((score / total) * 100);
+    const record = { score, total, pct };
+    if (!current || pct > current.pct) {
+      localStorage.setItem(bestKey(topic), JSON.stringify(record));
+      return record;
+    }
+    return current;
+  }
+
+  function formatBest(record) {
+    if (!record) return "—";
+    return `${record.score}/${record.total} (${record.pct}%)`;
+  }
+
+  // -----------------------------
+  // UI elements
+  // -----------------------------
+  const topicSelect = document.getElementById("topicSelect");
+  const countSelect = document.getElementById("countSelect");
+  const startBtn = document.getElementById("startBtn");
+  const bestScoreEl = document.getElementById("bestScore");
+
+  const quizArea = document.getElementById("quizArea");
+  const progressEl = document.getElementById("progress");
+  const questionEl = document.getElementById("question");
+  const choicesEl = document.getElementById("choices");
+  const feedbackEl = document.getElementById("feedback");
+  const nextBtn = document.getElementById("nextBtn");
+
+  const scoreArea = document.getElementById("scoreArea");
+  const scoreEl = document.getElementById("score");
+  const totalEl = document.getElementById("total");
+  const bestScoreLiveEl = document.getElementById("bestScoreLive");
+  const restartBtn = document.getElementById("restartBtn");
+
+  // -----------------------------
+  // Quiz state
+  // -----------------------------
+  let activeTopic = "all";
+  let quizList = [];
+  let idx = 0;
+  let score = 0;
+  let locked = false;
+
+  function updateBestDisplay() {
+    const rec = loadBest(topicSelect.value);
+    bestScoreEl.textContent = formatBest(rec);
+  }
+
+  topicSelect.addEventListener("change", updateBestDisplay);
+  updateBestDisplay();
+
+  function buildQuizList(topic, count) {
+    const pool = (topic === "all")
+      ? QUESTION_BANK
+      : QUESTION_BANK.filter(q => q.topic === topic);
+
+    const shuffled = shuffle(pool);
+    const n = Math.min(count, shuffled.length);
+
+    return shuffled.slice(0, n);
+  }
+
+  function startQuiz() {
+    activeTopic = topicSelect.value;
+    const count = parseInt(countSelect.value, 10);
+
+    quizList = buildQuizList(activeTopic, count);
+
+    // Handle too-few questions gracefully
+    if (quizList.length === 0) {
+      alert("No questions found for this subtopic yet.");
+      return;
+    }
+
+    idx = 0;
+    score = 0;
+    locked = false;
+
+    scoreArea.style.display = "none";
+    quizArea.style.display = "block";
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    locked = false;
+    feedbackEl.textContent = "";
+    nextBtn.style.display = "none";
+    choicesEl.innerHTML = "";
+
+    const item = quizList[idx];
+    progressEl.textContent = `Question ${idx + 1} of ${quizList.length}`;
+    questionEl.textContent = item.q;
+
+    item.choices.forEach((text, choiceIdx) => {
+      const btn = document.createElement("button");
+      btn.className = "btn";
+      btn.style.display = "block";
+      btn.style.margin = "8px 0";
+      btn.textContent = text;
+
+      btn.addEventListener("click", () => choose(choiceIdx));
+      choicesEl.appendChild(btn);
+    });
+  }
+
+  function choose(choiceIdx) {
+    if (locked) return;
+    locked = true;
+
+    const item = quizList[idx];
+    const buttons = choicesEl.querySelectorAll("button");
+    buttons.forEach(b => b.disabled = true);
+
+    const correctBtn = buttons[item.answerIndex];
+
+    if (choiceIdx === item.answerIndex) {
+      score++;
+      feedbackEl.textContent = `Correct. ${item.explain}`;
+      buttons[choiceIdx].style.border = "2px solid #2e7d32";
+    } else {
+      feedbackEl.textContent = `Not quite. ${item.explain}`;
+      buttons[choiceIdx].style.border = "2px solid #c62828";
+      correctBtn.style.border = "2px solid #2e7d32";
+    }
+
+    nextBtn.style.display = "inline-block";
+    nextBtn.textContent = (idx === quizList.length - 1) ? "Finish" : "Next";
+  }
+
+  function finishQuiz() {
+    quizArea.style.display = "none";
+    scoreArea.style.display = "block";
+
+    scoreEl.textContent = score;
+    totalEl.textContent = quizList.length;
+
+    const best = saveBest(activeTopic, score, quizList.length);
+    bestScoreLiveEl.textContent = formatBest(best);
+    bestScoreEl.textContent = formatBest(best);
+  }
+
+  nextBtn.addEventListener("click", () => {
+    if (idx < quizList.length - 1) {
+      idx++;
+      renderQuestion();
+    } else {
+      finishQuiz();
+    }
+  });
+
+  startBtn.addEventListener("click", startQuiz);
+
+  restartBtn.addEventListener("click", () => {
+    // restart with same settings but reshuffle questions
+    startQuiz();
+  });
+</script>
+
+</body>
+</html>
