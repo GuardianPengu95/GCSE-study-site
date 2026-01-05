@@ -8,9 +8,9 @@
 
 <a class="btn" href="index.html">← Back to Topic 1</a>
 
-<h1>Topic 1 Quiz</h1>
+<h1>Topic 1 Interactive Quiz</h1>
 <p class="muted">
-Choose a subtopic, then start. Questions randomise each time. Best score saves automatically.
+Random questions each time. Choose a subtopic or mix all. Best scores save automatically. Retry incorrect after finishing.
 </p>
 
 <div class="card">
@@ -51,425 +51,318 @@ Choose a subtopic, then start. Questions randomise each time. Best score saves a
 
 <div id="scoreArea" class="card" style="display:none;">
   <p><strong>Score:</strong> <span id="score">0</span> / <span id="total">0</span></p>
-  <p class="muted"><strong>Best score (this subtopic):</strong> <span id="bestScoreLive">—</span></p>
+  <p class="muted"><strong>Best score (this mode):</strong> <span id="bestScoreLive">—</span></p>
+  <p class="muted" id="summaryLine"></p>
+  <p class="muted" id="weakestLine"></p>
+
   <button id="restartBtn" class="btn">Restart</button>
+  <button id="retryBtn" class="btn" style="display:none; margin-left:8px;">Retry Incorrect</button>
 </div>
 
 <script>
-  // -----------------------------
-  // Question bank (edit/add here)
-  // Each question has a topic tag
-  // -----------------------------
+  // ---------------------------------------
+  // QUESTION BANK
+  // You can paste the expansion pack into this array.
+  // ---------------------------------------
   const QUESTION_BANK = [
+
+    // ==============================
+// EXPANSION PACK (Topic 1)
+// Adds many more questions per subtopic
+// ==============================
+
+// -------- Cell Structure (more) --------
+{
+  topic: "cell-structure",
+  q: "Which structure is where most chemical reactions happen?",
+  choices: ["Cytoplasm", "Nucleus", "Cell wall", "Chloroplasts"],
+  answerIndex: 0,
+  explain: "Most reactions occur in the cytoplasm (controlled by enzymes)."
+},
+{
+  topic: "cell-structure",
+  q: "What is the function of a plant cell wall?",
+  choices: ["Controls entry/exit", "Strengthens and supports shape", "Site of respiration", "Contains DNA"],
+  answerIndex: 1,
+  explain: "A plant cell wall (cellulose) strengthens the cell and supports its shape."
+},
+{
+  topic: "cell-structure",
+  q: "Which pair is found in BOTH plant and animal cells?",
+  choices: ["Chloroplasts and cell wall", "Nucleus and mitochondria", "Cell wall and vacuole", "Plasmids and circular DNA"],
+  answerIndex: 1,
+  explain: "Both plant and animal cells contain a nucleus and mitochondria."
+},
+{
+  topic: "cell-structure",
+  q: "Where is bacterial genetic material found?",
+  choices: ["Inside a nucleus", "Free in the cytoplasm (circular DNA)", "Inside mitochondria", "In chloroplasts"],
+  answerIndex: 1,
+  explain: "Bacteria have circular DNA free in the cytoplasm (no nucleus)."
+},
+{
+  topic: "cell-structure",
+  q: "Which statement is correct about ribosomes?",
+  choices: ["They contain chlorophyll", "They are the site of protein synthesis", "They control the cell", "They perform respiration"],
+  answerIndex: 1,
+  explain: "Ribosomes are where proteins are made."
+},
+{
+  topic: "cell-structure",
+  q: "Which structure controls what enters and leaves the cell?",
+  choices: ["Cell membrane", "Cytoplasm", "Nucleus", "Cell wall"],
+  answerIndex: 0,
+  explain: "The cell membrane controls movement of substances in and out."
+},
+{
+  topic: "cell-structure",
+  q: "Which structure is the site of photosynthesis?",
+  choices: ["Chloroplasts", "Mitochondria", "Ribosomes", "Nucleus"],
+  answerIndex: 0,
+  explain: "Chloroplasts contain chlorophyll for photosynthesis."
+},
+{
+  topic: "cell-structure",
+  q: "Why are bacterial ribosomes described as 'smaller' in prokaryotes?",
+  choices: ["Because bacteria are larger", "Because bacteria are simpler cells", "Because bacteria have a nucleus", "Because bacteria have chloroplasts"],
+  answerIndex: 1,
+  explain: "Prokaryotes are simpler and have smaller ribosomes than eukaryotes."
+},
+
+// -------- Microscopy (more) --------
+{
+  topic: "microscopy",
+  q: "Which is true about electron microscopes?",
+  choices: ["Can observe living cells", "Require a vacuum so cannot observe living cells", "Use light", "Have lower resolution than light microscopes"],
+  answerIndex: 1,
+  explain: "Electron microscopes require a vacuum, so living specimens cannot be viewed."
+},
+{
+  topic: "microscopy",
+  q: "An image is 12 mm and magnification is 300×. What is the real size in mm?",
+  choices: ["0.04 mm", "0.4 mm", "4 mm", "36 mm"],
+  answerIndex: 0,
+  explain: "Real size = image size ÷ magnification = 12 ÷ 300 = 0.04 mm."
+},
+{
+  topic: "microscopy",
+  q: "0.04 mm is equal to how many µm?",
+  choices: ["4 µm", "40 µm", "400 µm", "4000 µm"],
+  answerIndex: 1,
+  explain: "0.04 mm × 1000 = 40 µm."
+},
+{
+  topic: "microscopy",
+  q: "Why use a stain like iodine?",
+  choices: ["To increase magnification", "To increase contrast so structures are easier to see", "To increase resolution", "To prevent diffusion"],
+  answerIndex: 1,
+  explain: "Stains increase contrast so cell structures are easier to observe."
+},
+{
+  topic: "microscopy",
+  q: "Which gives the largest field of view?",
+  choices: ["Highest magnification", "Lowest magnification", "Electron microscope only", "No difference"],
+  answerIndex: 1,
+  explain: "Lowest magnification gives the largest field of view."
+},
+{
+  topic: "microscopy",
+  q: "If real size is 8 µm and magnification is 2000×, what is the image size in µm?",
+  choices: ["16 µm", "4000 µm", "2008 µm", "250 µm"],
+  answerIndex: 1,
+  explain: "Image size = magnification × real size = 2000 × 8 = 16,000 µm. (Not listed? See note below.)"
+},
+{
+  topic: "microscopy",
+  q: "Which correction is best for the previous question?",
+  choices: ["The correct image size is 16,000 µm", "The correct image size is 1600 µm", "The correct image size is 160 µm", "The correct image size is 16 µm"],
+  answerIndex: 0,
+  explain: "Image size = 2000 × 8 = 16,000 µm. (I included this to reinforce method.)"
+},
+{
+  topic: "microscopy",
+  q: "Why can a thick specimen reduce image quality?",
+  choices: ["Light cannot pass through clearly", "It increases resolution", "It reduces concentration gradient", "It increases magnification automatically"],
+  answerIndex: 0,
+  explain: "If too thick, light cannot pass through clearly, so the image is unclear."
+},
+
+// -------- Cell Transport (more) --------
+{
+  topic: "cell-transport",
+  q: "Active transport moves substances…",
+  choices: ["Down a concentration gradient", "Against a concentration gradient", "Only water molecules", "Without carrier proteins"],
+  answerIndex: 1,
+  explain: "Active transport moves substances against the concentration gradient."
+},
+{
+  topic: "cell-transport",
+  q: "Why is a plant cell wall important in osmosis?",
+  choices: ["It stops all water entering", "It prevents the cell bursting", "It increases diffusion distance", "It breaks down DNA"],
+  answerIndex: 1,
+  explain: "The cell wall supports the cell and prevents bursting in dilute solutions."
+},
+{
+  topic: "cell-transport",
+  q: "A plant cell in a concentrated solution becomes…",
+  choices: ["Turgid", "Flaccid", "Always bursts", "A prokaryote"],
+  answerIndex: 1,
+  explain: "Water leaves by osmosis, turgor pressure drops, the cell becomes flaccid."
+},
+{
+  topic: "cell-transport",
+  q: "Which is the best description of osmosis direction?",
+  choices: ["High solute to low solute", "Dilute to concentrated solution", "Concentrated to dilute solution", "High temperature to low temperature"],
+  answerIndex: 1,
+  explain: "Water moves from dilute (higher water concentration) to concentrated (lower water concentration)."
+},
+{
+  topic: "cell-transport",
+  q: "Which does NOT affect diffusion rate?",
+  choices: ["Temperature", "Concentration gradient", "Surface area", "Whether the cell is plant or animal"],
+  answerIndex: 3,
+  explain: "Diffusion rate depends on gradient, temperature, surface area, distance—not cell type."
+},
+{
+  topic: "cell-transport",
+  q: "Why does higher temperature increase diffusion rate?",
+  choices: ["Particles have more kinetic energy and move faster", "Particles stop moving", "Membranes become thicker", "Concentration gradient disappears"],
+  answerIndex: 0,
+  explain: "Higher temperature increases kinetic energy so particles move faster."
+},
+
+// -------- Mitosis (more) --------
+{
+  topic: "mitosis",
+  q: "Which stage: chromosomes are pulled to opposite poles?",
+  choices: ["Prophase", "Metaphase", "Anaphase", "Telophase"],
+  answerIndex: 2,
+  explain: "Anaphase: chromosomes move to opposite poles."
+},
+{
+  topic: "mitosis",
+  q: "Which stage: two nuclei form as nuclear membranes reform?",
+  choices: ["Prophase", "Metaphase", "Anaphase", "Telophase"],
+  answerIndex: 3,
+  explain: "Telophase: two nuclei form."
+},
+{
+  topic: "mitosis",
+  q: "Mitosis is important for repair because…",
+  choices: ["It makes genetically identical cells to replace damaged ones", "It halves chromosome number", "It produces gametes", "It creates plasmids"],
+  answerIndex: 0,
+  explain: "Repair requires identical replacement cells to maintain tissue function."
+},
+{
+  topic: "mitosis",
+  q: "A malignant tumour is…",
+  choices: ["Not cancer", "Cancerous and can invade/spread", "Always harmless", "A type of chloroplast"],
+  answerIndex: 1,
+  explain: "Malignant tumours invade tissues and can spread—this is cancer."
+},
+{
+  topic: "mitosis",
+  q: "A benign tumour is…",
+  choices: ["Cancerous and spreads", "Non-cancerous and stays in one place", "A bacterial plasmid", "A type of enzyme"],
+  answerIndex: 1,
+  explain: "Benign tumours do not invade/spread; they remain in one place."
+},
+
+// -------- Stem Cells (more) --------
+{
+  topic: "stem-cells",
+  q: "Adult stem cells usually can differentiate into…",
+  choices: ["Any body cell", "A limited range of cell types", "Only plant cells", "Only bacteria"],
+  answerIndex: 1,
+  explain: "Adult stem cells have limited differentiation potential compared to embryonic."
+},
+{
+  topic: "stem-cells",
+  q: "Plant stem cells are used to…",
+  choices: ["Clone plants and produce identical copies quickly", "Increase microscope resolution", "Stop osmosis", "Create plasmids"],
+  answerIndex: 0,
+  explain: "Plant stem cells in meristems allow cloning and rapid production of identical plants."
+},
+{
+  topic: "stem-cells",
+  q: "One disadvantage of stem cell therapy is…",
+  choices: ["Cells may be rejected by the immune system", "Cells cannot divide", "Cells always become bacteria", "Cells reduce magnification"],
+  answerIndex: 0,
+  explain: "Immune rejection is a key risk if cells are not genetically identical."
+},
+{
+  topic: "stem-cells",
+  q: "Which is a valid ethical argument AGAINST embryonic stem cell research?",
+  choices: ["It can save lives", "Embryos are destroyed and may be seen as a life", "It increases resolution", "It prevents tumours"],
+  answerIndex: 1,
+  explain: "Opponents argue destroying embryos is unethical because embryos have a right to life."
+},
+
     // Cell Structure
-    
-    {
-      topic: "cell-structure",
-      q: "Which structure is the site of protein synthesis?",
-      choices: ["Nucleus", "Ribosomes", "Mitochondria", "Cell membrane"],
-      answerIndex: 1,
-      explain: "Ribosomes are the site of protein synthesis."
-    },
-    {
-      topic: "cell-structure",
-      q: "Which structure contains DNA and controls cell activities?",
-      choices: ["Cytoplasm", "Nucleus", "Cell wall", "Ribosomes"],
-      answerIndex: 1,
-      explain: "The nucleus contains genetic material (DNA) and controls cell activities."
-    },
-    {
-      topic: "cell-structure",
-      q: "Which structure is unique to plant cells (not found in animal cells)?",
-      choices: ["Cell membrane", "Mitochondria", "Chloroplasts", "Ribosomes"],
-      answerIndex: 2,
-      explain: "Chloroplasts are found in plant cells (not animal cells)."
-    },
-    {
-      topic: "cell-structure",
-      q: "What is the function of mitochondria?",
-      choices: [
-        "Site of aerobic respiration (energy release)",
-        "Protein synthesis",
-        "Controls what enters/leaves",
-        "Contains chlorophyll"
-      ],
-      answerIndex: 0,
-      explain: "Mitochondria are the site of aerobic respiration where energy is released."
-    },
-    {
-      topic: "cell-structure",
-      q: "Why are bacterial cells called prokaryotic?",
-      choices: [
-        "They contain mitochondria",
-        "They have a nucleus",
-        "They lack a nucleus and membrane-bound organelles",
-        "They have chloroplasts"
-      ],
-      answerIndex: 2,
-      explain: "Prokaryotes do not have a nucleus or membrane-bound organelles."
-    },
+    { topic:"cell-structure", q:"Which structure is the site of protein synthesis?", choices:["Nucleus","Ribosomes","Mitochondria","Cell membrane"], answerIndex:1, explain:"Ribosomes are the site of protein synthesis." },
+    { topic:"cell-structure", q:"Which structure contains DNA and controls cell activities?", choices:["Cytoplasm","Nucleus","Cell wall","Ribosomes"], answerIndex:1, explain:"The nucleus contains genetic material (DNA) and controls the cell." },
+    { topic:"cell-structure", q:"Which structure is unique to plant cells (not found in animal cells)?", choices:["Cell membrane","Mitochondria","Chloroplasts","Ribosomes"], answerIndex:2, explain:"Chloroplasts contain chlorophyll for photosynthesis." },
+    { topic:"cell-structure", q:"What is the function of mitochondria?", choices:["Site of aerobic respiration (energy release)","Protein synthesis","Controls what enters/leaves","Contains chlorophyll"], answerIndex:0, explain:"Mitochondria are the site of aerobic respiration where energy is released." },
+    { topic:"cell-structure", q:"Why are bacterial cells called prokaryotic?", choices:["They contain mitochondria","They have a nucleus","They lack a nucleus and membrane-bound organelles","They have chloroplasts"], answerIndex:2, explain:"Prokaryotes do not have a nucleus or membrane-bound organelles." },
 
     // Microscopy
-    {
-      topic: "microscopy",
-      q: "Define resolution.",
-      choices: [
-        "How many times bigger an image is",
-        "The ability to distinguish two close points as separate",
-        "The thickness of a slide",
-        "How much stain is used"
-      ],
-      answerIndex: 1,
-      explain: "Resolution is the ability to distinguish two close points as separate."
-    },
-    {
-      topic: "microscopy",
-      q: "Why do electron microscopes have higher resolution than light microscopes?",
-      choices: [
-        "They use thicker lenses",
-        "Electrons have a shorter wavelength than light",
-        "They use more stain",
-        "They are easier to focus"
-      ],
-      answerIndex: 1,
-      explain: "Shorter wavelength (electrons) allows finer detail to be resolved."
-    },
-    {
-      topic: "microscopy",
-      q: "Magnification = ?",
-      choices: [
-        "real size ÷ image size",
-        "image size ÷ real size",
-        "image size + real size",
-        "real size ÷ resolution"
-      ],
-      answerIndex: 1,
-      explain: "Magnification = image size ÷ real size (use same units)."
-    },
-    {
-      topic: "microscopy",
-      q: "Convert 0.12 mm into µm.",
-      choices: ["12 µm", "120 µm", "1200 µm", "0.0012 µm"],
-      answerIndex: 1,
-      explain: "1 mm = 1000 µm, so 0.12 mm = 120 µm."
-    },
-    {
-      topic: "microscopy",
-      q: "Why start on the lowest magnification when using a light microscope?",
-      choices: [
-        "To avoid air bubbles",
-        "To find the specimen more easily",
-        "To increase resolution",
-        "Because stains only work at low magnification"
-      ],
-      answerIndex: 1,
-      explain: "Low magnification gives a larger field of view to locate the specimen."
-    },
+    { topic:"microscopy", q:"Define resolution.", choices:["How many times bigger an image is","The ability to distinguish two close points as separate","The thickness of a slide","How much stain is used"], answerIndex:1, explain:"Resolution is the ability to distinguish two close points as separate." },
+    { topic:"microscopy", q:"Why do electron microscopes have higher resolution than light microscopes?", choices:["They use thicker lenses","Electrons have a shorter wavelength than light","They use more stain","They are easier to focus"], answerIndex:1, explain:"Shorter wavelength (electrons) allows finer detail to be resolved." },
+    { topic:"microscopy", q:"Magnification = ?", choices:["real size ÷ image size","image size ÷ real size","image size + real size","real size ÷ resolution"], answerIndex:1, explain:"Magnification = image size ÷ real size (use same units)." },
+    { topic:"microscopy", q:"Convert 0.12 mm into µm.", choices:["12 µm","120 µm","1200 µm","0.0012 µm"], answerIndex:1, explain:"1 mm = 1000 µm, so 0.12 mm = 120 µm." },
+    { topic:"microscopy", q:"Why lower the coverslip at an angle when making a slide?", choices:["To increase magnification","To prevent air bubbles","To increase resolution","To stain the sample"], answerIndex:1, explain:"Lowering at an angle reduces trapped air bubbles." },
 
     // Cell Transport
-    {
-      topic: "cell-transport",
-      q: "Define diffusion.",
-      choices: [
-        "Movement of water across a membrane",
-        "Net movement of particles from high to low concentration",
-        "Movement from low to high concentration using energy",
-        "Movement of blood around the body"
-      ],
-      answerIndex: 1,
-      explain: "Diffusion is the net movement of particles from high to low concentration."
-    },
-    {
-      topic: "cell-transport",
-      q: "Osmosis is best described as…",
-      choices: [
-        "Diffusion of water through a partially permeable membrane",
-        "Diffusion of any particles through a membrane",
-        "Movement of ions using energy",
-        "Movement of glucose down a gradient"
-      ],
-      answerIndex: 0,
-      explain: "Osmosis is the diffusion of water across a partially permeable membrane."
-    },
-    {
-      topic: "cell-transport",
-      q: "Which process requires energy from respiration?",
-      choices: ["Diffusion", "Osmosis", "Active transport", "Evaporation"],
-      answerIndex: 2,
-      explain: "Active transport moves substances against the concentration gradient, requiring energy."
-    },
-    {
-      topic: "cell-transport",
-      q: "What happens to a plant cell in a dilute solution?",
-      choices: ["Becomes turgid", "Becomes flaccid", "Bursts", "No change ever"],
-      answerIndex: 0,
-      explain: "Water enters by osmosis; vacuole swells; turgor pressure increases; cell becomes turgid."
-    },
-    {
-      topic: "cell-transport",
-      q: "Which factor increases diffusion rate?",
-      choices: ["Lower temperature", "Smaller concentration difference", "Steeper concentration gradient", "Thicker membrane"],
-      answerIndex: 2,
-      explain: "A steeper concentration gradient increases the rate of diffusion."
-    },
+    { topic:"cell-transport", q:"Define diffusion.", choices:["Movement of water across a membrane","Net movement of particles from high to low concentration","Movement from low to high concentration using energy","Movement of blood around the body"], answerIndex:1, explain:"Diffusion is the net movement of particles from high to low concentration." },
+    { topic:"cell-transport", q:"Osmosis is best described as…", choices:["Diffusion of water through a partially permeable membrane","Diffusion of any particles through a membrane","Movement of ions using energy","Movement of glucose down a gradient"], answerIndex:0, explain:"Osmosis is the diffusion of water across a partially permeable membrane." },
+    { topic:"cell-transport", q:"Which process requires energy from respiration?", choices:["Diffusion","Osmosis","Active transport","Evaporation"], answerIndex:2, explain:"Active transport moves substances against the concentration gradient." },
+    { topic:"cell-transport", q:"What happens to a plant cell in a dilute solution?", choices:["Becomes turgid","Becomes flaccid","Bursts","No change ever"], answerIndex:0, explain:"Water enters by osmosis, increasing turgor pressure; the cell becomes turgid." },
+    { topic:"cell-transport", q:"Which factor increases diffusion rate?", choices:["Lower temperature","Smaller concentration difference","Steeper concentration gradient","Thicker membrane"], answerIndex:2, explain:"A steeper concentration gradient increases diffusion rate." },
 
     // Mitosis
-    {
-      topic: "mitosis",
-      q: "What happens in interphase?",
-      choices: [
-        "Nucleus divides",
-        "Cell grows and DNA is copied",
-        "Cytoplasm divides",
-        "Chromosomes line up at the equator"
-      ],
-      answerIndex: 1,
-      explain: "In interphase, the cell grows and copies its DNA."
-    },
-    {
-      topic: "mitosis",
-      q: "Which stage is: chromosomes line up at the centre of the cell?",
-      choices: ["Prophase", "Metaphase", "Anaphase", "Telophase"],
-      answerIndex: 1,
-      explain: "In metaphase, chromosomes line up at the equator."
-    },
-    {
-      topic: "mitosis",
-      q: "Mitosis produces…",
-      choices: ["Two different cells", "Two genetically identical cells", "Four genetically different cells", "One larger cell"],
-      answerIndex: 1,
-      explain: "Mitosis produces two genetically identical daughter cells."
-    },
-    {
-      topic: "mitosis",
-      q: "Uncontrolled cell division can lead to…",
-      choices: ["Photosynthesis", "Tumours", "Diffusion", "Osmosis"],
-      answerIndex: 1,
-      explain: "Uncontrolled cell division can form tumours (malignant tumours are cancer)."
-    },
+    { topic:"mitosis", q:"What happens in interphase?", choices:["Nucleus divides","Cell grows and DNA is copied","Cytoplasm divides","Chromosomes line up at the equator"], answerIndex:1, explain:"In interphase, the cell grows and copies its DNA." },
+    { topic:"mitosis", q:"Which stage is: chromosomes line up at the centre of the cell?", choices:["Prophase","Metaphase","Anaphase","Telophase"], answerIndex:1, explain:"In metaphase, chromosomes line up at the equator." },
+    { topic:"mitosis", q:"Mitosis produces…", choices:["Two different cells","Two genetically identical cells","Four genetically different cells","One larger cell"], answerIndex:1, explain:"Mitosis produces two genetically identical daughter cells." },
+    { topic:"mitosis", q:"Why must DNA be copied before mitosis?", choices:["So the cell can photosynthesise","So each daughter cell gets a full set of chromosomes","To increase diffusion","To make plasmids"], answerIndex:1, explain:"DNA is copied so each daughter cell receives a complete set." },
+    { topic:"mitosis", q:"Uncontrolled cell division can lead to…", choices:["Photosynthesis","Tumours","Diffusion","Osmosis"], answerIndex:1, explain:"Uncontrolled cell division can form tumours (malignant tumours are cancer)." },
 
     // Stem Cells
-    {
-      topic: "stem-cells",
-      q: "Stem cells are best described as…",
-      choices: [
-        "Specialised cells that cannot change",
-        "Undifferentiated cells that can differentiate",
-        "Cells with no DNA",
-        "Cells that only do respiration"
-      ],
-      answerIndex: 1,
-      explain: "Stem cells are undifferentiated and can differentiate into specialised cells."
-    },
-    {
-      topic: "stem-cells",
-      q: "Where are plant stem cells found?",
-      choices: ["Mitochondria", "Meristems (root/shoot tips)", "Nucleus", "Ribosomes"],
-      answerIndex: 1,
-      explain: "Plant stem cells are found in meristems such as root and shoot tips."
-    },
-    {
-      topic: "stem-cells",
-      q: "Why are embryonic stem cells ethically controversial?",
-      choices: [
-        "They do not divide",
-        "They require destroying embryos",
-        "They only exist in plants",
-        "They cause photosynthesis"
-        // -----------------------------
-// EXTRA QUESTIONS PACK (Topic 1)
-// -----------------------------
-
-// Cell Structure (extra)
-{
-  topic: "cell-structure",
-  q: "What is the function of the cell membrane?",
-  choices: ["Supports the cell", "Controls movement of substances in and out", "Site of photosynthesis", "Contains DNA"],
-  answerIndex: 1,
-  explain: "The cell membrane controls what enters and leaves the cell."
-},
-{
-  topic: "cell-structure",
-  q: "What is the function of the permanent vacuole in plant cells?",
-  choices: ["Aerobic respiration", "Protein synthesis", "Maintains turgor pressure", "Controls the cell"],
-  answerIndex: 2,
-  explain: "The vacuole contains cell sap and helps maintain turgor pressure."
-},
-{
-  topic: "cell-structure",
-  q: "What do plasmids often carry genes for?",
-  choices: ["Photosynthesis", "Antibiotic resistance", "Aerobic respiration", "Diffusion"],
-  answerIndex: 1,
-  explain: "Plasmids can carry useful genes such as antibiotic resistance."
-},
-{
-  topic: "cell-structure",
-  q: "Which statement about prokaryotic DNA is correct?",
-  choices: ["It is linear and in a nucleus", "It is circular and free in the cytoplasm", "It is inside mitochondria", "It is in chloroplasts"],
-  answerIndex: 1,
-  explain: "Prokaryotic DNA is circular and not enclosed in a nucleus."
-},
-
-// Microscopy (extra)
-{
-  topic: "microscopy",
-  q: "Which is the correct unit conversion?",
-  choices: ["1 mm = 100 µm", "1 mm = 1000 µm", "1 µm = 1 mm", "1 mm = 10,000 µm"],
-  answerIndex: 1,
-  explain: "1 mm = 1000 µm."
-},
-{
-  topic: "microscopy",
-  q: "A cell image is 25 mm. The real cell is 50 µm. What is the magnification?",
-  choices: ["5×", "50×", "500×", "5000×"],
-  answerIndex: 2,
-  explain: "25 mm = 25,000 µm. 25,000 ÷ 50 = 500×."
-},
-{
-  topic: "microscopy",
-  q: "Which microscope can show cell ultrastructure such as membranes clearly?",
-  choices: ["Light microscope", "Electron microscope", "Hand lens", "None"],
-  answerIndex: 1,
-  explain: "Electron microscopes have higher resolution and can show ultrastructure."
-},
-{
-  topic: "microscopy",
-  q: "Why lower the coverslip at an angle when making a slide?",
-  choices: ["To increase magnification", "To prevent air bubbles", "To increase resolution", "To stain the sample"],
-  answerIndex: 1,
-  explain: "Lowering at an angle reduces trapped air bubbles."
-},
-
-// Cell Transport (extra)
-{
-  topic: "cell-transport",
-  q: "Which best describes 'net movement' in diffusion?",
-  choices: ["Particles only move one way", "More particles move high→low than low→high overall", "Particles stop moving at equilibrium", "All particles move at same speed"],
-  answerIndex: 1,
-  explain: "Particles move both ways, but overall more move from high to low concentration."
-},
-{
-  topic: "cell-transport",
-  q: "Which direction is water moving in osmosis?",
-  choices: ["High solute → low solute", "Low water concentration → high water concentration", "High water concentration → low water concentration", "Low temperature → high temperature"],
-  answerIndex: 2,
-  explain: "Water moves from high water concentration (dilute) to low water concentration (concentrated)."
-},
-{
-  topic: "cell-transport",
-  q: "Root hair cells absorb mineral ions from soil mainly by…",
-  choices: ["Diffusion", "Osmosis", "Active transport", "Evaporation"],
-  answerIndex: 2,
-  explain: "Mineral ions are often absorbed against the concentration gradient using active transport."
-},
-{
-  topic: "cell-transport",
-  q: "What happens to an animal cell in a very dilute solution?",
-  choices: ["Becomes turgid", "Becomes flaccid", "May burst", "No change"],
-  answerIndex: 2,
-  explain: "Water enters by osmosis; without a cell wall, animal cells can burst."
-},
-
-// Mitosis (extra)
-{
-  topic: "mitosis",
-  q: "What is the correct order of the cell cycle stages (AQA)?",
-  choices: ["Mitosis → Interphase → Cytokinesis", "Interphase → Mitosis → Cytokinesis", "Cytokinesis → Interphase → Mitosis", "Interphase → Cytokinesis → Mitosis"],
-  answerIndex: 1,
-  explain: "Interphase (DNA copied) → Mitosis (nucleus divides) → Cytokinesis (cell splits)."
-},
-{
-  topic: "mitosis",
-  q: "Which statement about mitosis is correct?",
-  choices: ["It produces genetically different cells", "It produces two identical daughter cells", "It halves chromosome number", "It only happens in bacteria"],
-  answerIndex: 1,
-  explain: "Mitosis produces two genetically identical daughter cells."
-},
-{
-  topic: "mitosis",
-  q: "Why must DNA be copied before mitosis?",
-  choices: ["So the cell can photosynthesise", "So each daughter cell gets a full set of chromosomes", "To increase diffusion", "To make plasmids"],
-  answerIndex: 1,
-  explain: "DNA is copied so each daughter cell receives a complete set of chromosomes."
-},
-
-// Stem Cells (extra)
-{
-  topic: "stem-cells",
-  q: "Which type of stem cell can differentiate into any body cell (GCSE level)?",
-  choices: ["Adult stem cells", "Embryonic stem cells", "Root hair cells", "Red blood cells"],
-  answerIndex: 1,
-  explain: "Embryonic stem cells can differentiate into any type of body cell."
-},
-{
-  topic: "stem-cells",
-  q: "One risk of stem cell therapy is…",
-  choices: ["Lack of enzymes", "Tumour formation from uncontrolled division", "Decreased resolution", "Loss of plasmids"],
-  answerIndex: 1,
-  explain: "Stem cells may divide uncontrollably and form tumours."
-},
-{
-  topic: "stem-cells",
-  q: "Why are plant stem cells useful in agriculture?",
-  choices: ["They can clone plants and produce identical copies", "They increase resolution", "They cause osmosis", "They stop mitosis"],
-  answerIndex: 0,
-  explain: "Plant stem cells allow cloning, producing many identical plants quickly."
-},
-{
-  topic: "stem-cells",
-  q: "Which is an ethical argument FOR embryonic stem cell research?",
-  choices: ["Embryos must always be destroyed", "They could save lives by treating diseases", "They reduce magnification", "They stop diffusion"],
-  answerIndex: 1,
-  explain: "Supporters argue potential treatments could save lives and reduce suffering."
-},
-
-      ],
-      answerIndex: 1,
-      explain: "Embryonic stem cells involve destroying embryos, which raises ethical concerns."
-    }
+    { topic:"stem-cells", q:"Stem cells are best described as…", choices:["Specialised cells that cannot change","Undifferentiated cells that can differentiate","Cells with no DNA","Cells that only do respiration"], answerIndex:1, explain:"Stem cells are undifferentiated and can differentiate into specialised cells." },
+    { topic:"stem-cells", q:"Where are plant stem cells found?", choices:["Mitochondria","Meristems (root/shoot tips)","Nucleus","Ribosomes"], answerIndex:1, explain:"Plant stem cells are found in meristems such as root and shoot tips." },
+    { topic:"stem-cells", q:"One risk of stem cell therapy is…", choices:["Lack of enzymes","Tumour formation from uncontrolled division","Decreased resolution","Loss of plasmids"], answerIndex:1, explain:"Stem cells may divide uncontrollably and form tumours." },
+    { topic:"stem-cells", q:"Why are embryonic stem cells ethically controversial?", choices:["They do not divide","They require destroying embryos","They only exist in plants","They cause photosynthesis"], answerIndex:1, explain:"Embryonic stem cells involve destroying embryos, which raises ethical concerns." },
   ];
+  
 
-  // -----------------------------
-  // Helpers
-  // -----------------------------
-  function shuffle(arr) {
+  // ---------------- Utilities ----------------
+  function shuffle(arr){
     const a = arr.slice();
-    for (let j = a.length - 1; j > 0; j--) {
-      const k = Math.floor(Math.random() * (j + 1));
-      [a[j], a[k]] = [a[k], a[j]];
+    for(let j=a.length-1;j>0;j--){
+      const k = Math.floor(Math.random()*(j+1));
+      [a[j],a[k]]=[a[k],a[j]];
     }
     return a;
   }
 
-  function bestKey(topic) {
-    return `bestScore_topic1_${topic}`;
+  function bestKey(mode){ return `bestScore_topic1_${mode}`; }
+  function loadBest(mode){
+    const raw = localStorage.getItem(bestKey(mode));
+    if(!raw) return null;
+    try{ return JSON.parse(raw); }catch{ return null; }
   }
-
-  function loadBest(topic) {
-    const raw = localStorage.getItem(bestKey(topic));
-    if (!raw) return null;
-    try { return JSON.parse(raw); } catch { return null; }
-  }
-
-  function saveBest(topic, score, total) {
-    const current = loadBest(topic);
-    const pct = Math.round((score / total) * 100);
-    const record = { score, total, pct };
-    if (!current || pct > current.pct) {
-      localStorage.setItem(bestKey(topic), JSON.stringify(record));
+  function formatBest(r){ return r ? `${r.score}/${r.total} (${r.pct}%)` : "—"; }
+  function saveBest(mode, score, total){
+    const pct = Math.round((score/total)*100);
+    const record = {score,total,pct};
+    const current = loadBest(mode);
+    if(!current || pct > current.pct){
+      localStorage.setItem(bestKey(mode), JSON.stringify(record));
       return record;
     }
     return current;
   }
 
-  function formatBest(record) {
-    if (!record) return "—";
-    return `${record.score}/${record.total} (${record.pct}%)`;
-  }
-
-  // -----------------------------
-  // UI elements
-  // -----------------------------
+  // -------------- UI elements --------------
   const topicSelect = document.getElementById("topicSelect");
   const countSelect = document.getElementById("countSelect");
   const startBtn = document.getElementById("startBtn");
@@ -486,65 +379,63 @@ Choose a subtopic, then start. Questions randomise each time. Best score saves a
   const scoreEl = document.getElementById("score");
   const totalEl = document.getElementById("total");
   const bestScoreLiveEl = document.getElementById("bestScoreLive");
+  const summaryLineEl = document.getElementById("summaryLine");
+  const weakestLineEl = document.getElementById("weakestLine");
   const restartBtn = document.getElementById("restartBtn");
+  const retryBtn = document.getElementById("retryBtn");
 
-  // -----------------------------
-  // Quiz state
-  // -----------------------------
-  let activeTopic = "all";
+  function updateBest(){
+    bestScoreEl.textContent = formatBest(loadBest(topicSelect.value));
+  }
+  topicSelect.addEventListener("change", updateBest);
+  updateBest();
+
+  // -------------- Quiz state --------------
+  let mode = "all";
   let quizList = [];
   let idx = 0;
   let score = 0;
   let locked = false;
+  let incorrect = [];
+  let perTopic = {}; // { topic: {correct, total} }
 
-  function updateBestDisplay() {
-    const rec = loadBest(topicSelect.value);
-    bestScoreEl.textContent = formatBest(rec);
-  }
-
-  topicSelect.addEventListener("change", updateBestDisplay);
-  updateBestDisplay();
-
-  function buildQuizList(topic, count) {
-    const pool = (topic === "all")
+  function buildQuizList(selectedMode, count){
+    const pool = selectedMode === "all"
       ? QUESTION_BANK
-      : QUESTION_BANK.filter(q => q.topic === topic);
+      : QUESTION_BANK.filter(q => q.topic === selectedMode);
 
-    const shuffled = shuffle(pool);
-    const n = Math.min(count, shuffled.length);
-
-    return shuffled.slice(0, n);
+    return shuffle(pool).slice(0, Math.min(count, pool.length));
   }
 
-  function startQuiz() {
-    activeTopic = topicSelect.value;
+  function startQuiz(customList = null){
+    mode = topicSelect.value;
     const count = parseInt(countSelect.value, 10);
 
-    quizList = buildQuizList(activeTopic, count);
-
-    // Handle too-few questions gracefully
-    if (quizList.length === 0) {
-      alert("No questions found for this subtopic yet.");
+    quizList = customList ? shuffle(customList) : buildQuizList(mode, count);
+    if(quizList.length === 0){
+      alert("No questions found for this mode yet.");
       return;
     }
 
     idx = 0;
     score = 0;
     locked = false;
+    incorrect = [];
+    perTopic = {};
 
     scoreArea.style.display = "none";
     quizArea.style.display = "block";
     renderQuestion();
   }
 
-  function renderQuestion() {
+  function renderQuestion(){
     locked = false;
     feedbackEl.textContent = "";
     nextBtn.style.display = "none";
     choicesEl.innerHTML = "";
 
     const item = quizList[idx];
-    progressEl.textContent = `Question ${idx + 1} of ${quizList.length}`;
+    progressEl.textContent = `Question ${idx+1} of ${quizList.length}`;
     questionEl.textContent = item.q;
 
     item.choices.forEach((text, choiceIdx) => {
@@ -553,50 +444,104 @@ Choose a subtopic, then start. Questions randomise each time. Best score saves a
       btn.style.display = "block";
       btn.style.margin = "8px 0";
       btn.textContent = text;
-
       btn.addEventListener("click", () => choose(choiceIdx));
       choicesEl.appendChild(btn);
     });
   }
 
-  function choose(choiceIdx) {
-    if (locked) return;
+  function ensureTopicStats(topic){
+    if(!perTopic[topic]) perTopic[topic] = {correct:0, total:0};
+  }
+
+  function choose(choiceIdx){
+    if(locked) return;
     locked = true;
 
     const item = quizList[idx];
     const buttons = choicesEl.querySelectorAll("button");
     buttons.forEach(b => b.disabled = true);
 
+    ensureTopicStats(item.topic);
+    perTopic[item.topic].total += 1;
+
     const correctBtn = buttons[item.answerIndex];
 
-    if (choiceIdx === item.answerIndex) {
+    if(choiceIdx === item.answerIndex){
       score++;
+      perTopic[item.topic].correct += 1;
       feedbackEl.textContent = `Correct. ${item.explain}`;
       buttons[choiceIdx].style.border = "2px solid #2e7d32";
     } else {
       feedbackEl.textContent = `Not quite. ${item.explain}`;
       buttons[choiceIdx].style.border = "2px solid #c62828";
       correctBtn.style.border = "2px solid #2e7d32";
+      incorrect.push(item);
     }
 
     nextBtn.style.display = "inline-block";
-    nextBtn.textContent = (idx === quizList.length - 1) ? "Finish" : "Next";
+    nextBtn.textContent = (idx === quizList.length-1) ? "Finish" : "Next";
   }
 
-  function finishQuiz() {
+  function getWeakestTopic(){
+    const entries = Object.entries(perTopic); // [topic, {correct,total}]
+    if(entries.length === 0) return null;
+
+    // choose lowest percentage; if tie, choose the one with more questions attempted
+    entries.sort((a,b) => {
+      const pa = a[1].correct / a[1].total;
+      const pb = b[1].correct / b[1].total;
+      if(pa !== pb) return pa - pb;
+      return b[1].total - a[1].total;
+    });
+
+    const [topic, stats] = entries[0];
+    return { topic, correct: stats.correct, total: stats.total, pct: Math.round((stats.correct/stats.total)*100) };
+  }
+
+  function prettyTopicName(t){
+    const map = {
+      "cell-structure":"Cell Structure",
+      "microscopy":"Microscopy",
+      "cell-transport":"Cell Transport",
+      "mitosis":"Mitosis",
+      "stem-cells":"Stem Cells"
+    };
+    return map[t] || t;
+  }
+
+  function finishQuiz(){
     quizArea.style.display = "none";
     scoreArea.style.display = "block";
 
     scoreEl.textContent = score;
     totalEl.textContent = quizList.length;
 
-    const best = saveBest(activeTopic, score, quizList.length);
+    const best = saveBest(mode, score, quizList.length);
     bestScoreLiveEl.textContent = formatBest(best);
     bestScoreEl.textContent = formatBest(best);
+
+    const wrongCount = incorrect.length;
+    const pct = Math.round((score/quizList.length)*100);
+    summaryLineEl.textContent = `Summary: ${pct}% correct. Incorrect: ${wrongCount}.`;
+
+    // Weakest subtopic only makes sense if you're mixing topics
+    if(mode === "all"){
+      const weakest = getWeakestTopic();
+      if(weakest){
+        weakestLineEl.textContent =
+          `Weakest subtopic: ${prettyTopicName(weakest.topic)} — ${weakest.correct}/${weakest.total} (${weakest.pct}%).`;
+      } else {
+        weakestLineEl.textContent = "";
+      }
+    } else {
+      weakestLineEl.textContent = "";
+    }
+
+    retryBtn.style.display = wrongCount > 0 ? "inline-block" : "none";
   }
 
   nextBtn.addEventListener("click", () => {
-    if (idx < quizList.length - 1) {
+    if(idx < quizList.length-1){
       idx++;
       renderQuestion();
     } else {
@@ -604,11 +549,11 @@ Choose a subtopic, then start. Questions randomise each time. Best score saves a
     }
   });
 
-  startBtn.addEventListener("click", startQuiz);
-
-  restartBtn.addEventListener("click", () => {
-    // restart with same settings but reshuffle questions
-    startQuiz();
+  startBtn.addEventListener("click", () => startQuiz());
+  restartBtn.addEventListener("click", () => startQuiz());
+  retryBtn.addEventListener("click", () => {
+    if(incorrect.length === 0) return;
+    startQuiz(incorrect);
   });
 </script>
 
