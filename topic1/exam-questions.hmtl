@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Topic 1 Exam Questions – Cell Biology</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+<a class="btn" href="index.html">← Back to Topic 1</a>
+
+<h1>Topic 1: Cell Biology — Exam Questions</h1>
+<p class="muted">
+AQA GCSE Biology Higher. Attempt these questions without notes. Use mark allocations to guide detail.
+</p>
+
+<hr>
+
+<h2>Section A: Short Answer (1–2 marks)</h2>
+
+<details>
+<summary>1) State the function of the nucleus. (1 mark)</summary>
+Contains genetic material (DNA) and controls the activities of the cell.
+</details>
+
+<details>
+<summary>2) Name two structures found in plant cells but not animal cells. (2 marks)</summary>
+Cell wall and chloroplasts. (Permanent vacuole also correct.)
+</details>
+
+<details>
+<summary>3) Define diffusion. (2 marks)</summary>
+The net movement of particles from an area of high concentration to an area of low concentration.
+</details>
+
+<details>
+<summary>4) Which type of cell division produces genetically identical cells? (1 mark)</summary>
+Mitosis.
+</details>
+
+<details>
+<summary>5) State one ethical concern about embryonic stem cells. (1 mark)</summary>
+Embryos are destroyed during their use.
+</details>
+
+<hr>
+
+<h2>Section B: Explain / Apply (3–4 marks)</h2>
+
+<details>
+<summary>6) Explain why electron microscopes have a higher resolution than light microscopes. (3 marks)</summary>
+Electron microscopes use electrons instead of light.  
+Electrons have a much shorter wavelength than light.  
+This allows smaller structures to be distinguished, giving higher resolution.
+</details>
+
+<details>
+<summary>7) Explain how osmosis affects a plant cell placed in a dilute solution. (4 marks)</summary>
+Water moves into the cell by osmosis through a partially permeable membrane.  
+Water enters the vacuole, increasing its volume.  
+This creates turgor pressure, pushing the cytoplasm against the cell wall.  
+The cell becomes turgid and rigid.
+</details>
+
+<details>
+<summary>8) Explain why active transport requires energy. (3 marks)</summary>
+Active transport moves substances from a low concentration to a high concentration.  
+This movement is against the concentration gradient.  
+Energy from respiration is required to do this.
+</details>
+
+<hr>
+
+<h2>Section C: Calculations (4 marks)</h2>
+
+<details>
+<summary>9) An image of a cell is 40 mm long. The real cell is 10 µm long. Calculate the magnification. (4 marks)</summary>
+Convert 40 mm to µm: 40 mm = 40,000 µm (1 mark).  
+Magnification = image size ÷ real size (1 mark).  
+40,000 ÷ 10 = 4000 (1 mark).  
+Magnification = 4000× (1 mark).
+</details>
+
+<hr>
+
+<h2>Section D: 6-Mark Questions (Higher)</h2>
+
+<details>
+<summary>10) Describe the differences between animal, plant, and bacterial cells. (6 marks)</summary>
+Animal and plant cells are eukaryotic and contain a nucleus, cytoplasm, cell membrane, mitochondria, and ribosomes.  
+Plant cells also contain chloroplasts for photosynthesis, a cellulose cell wall for support, and a permanent vacuole to maintain turgor pressure.  
+Bacterial cells are prokaryotic and do not have a nucleus or membrane-bound organelles.  
+Their genetic material is circular and found free in the cytoplasm, and they may contain plasmids.
+</details>
+
+<details>
+<summary>11) Describe the cell cycle and explain the importance of mitosis. (6 marks)</summary>
+The cell cycle includes interphase, mitosis, and cytokinesis.  
+During interphase the cell grows and copies its DNA.  
+Mitosis is when the nucleus divides and chromosomes are separated into two nuclei.  
+Cytokinesis divides the cytoplasm and cell membrane to form two daughter cells.  
+The daughter cells are genetically identical, which is important for growth and repair.
+</details>
+
+<details>
+<summary>12) Discuss the advantages and disadvantages of using embryonic stem cells. (6 marks)</summary>
+Embryonic stem cells can differentiate into any type of body cell, giving them great potential for treating diseases.  
+They could be used to replace damaged cells or grow new tissues.  
+However, embryos are destroyed during the process, which raises ethical concerns.  
+Some people believe embryos have a right to life, while others argue the benefits outweigh the ethical issues.
+</details>
+
+<hr>
+
+<h2>How to Use This Page Effectively</h2>
+<div class="card">
+    <ol>
+        <li>Attempt questions without opening the answers.</li>
+        <li>Check answers and highlight missing keywords.</li>
+        <li>Rewrite weak answers using correct exam terminology.</li>
+        <li>Repeat after a few days for retention.</li>
+    </ol>
+</div>
+
+</body>
+</html>
